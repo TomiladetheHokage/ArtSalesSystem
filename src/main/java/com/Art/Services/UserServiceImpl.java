@@ -72,12 +72,13 @@ public class UserServiceImpl implements userService{
 
     @Override
     public User viewProfile(String username) {
-        User user = userRepo.findByUsername(username);
-        if (user != null) {
-            return user;
-        } else {
-            throw new IllegalArgumentException("User with username " + username + " not found");
-        }
+//        User user = userRepo.findByUsername(username);
+//        if (user != null) {
+//            return user;
+//        } else {
+//            throw new IllegalArgumentException("User with username " + username + " not found");
+//        }
+        return null;
     }
 
 
