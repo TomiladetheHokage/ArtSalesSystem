@@ -1,4 +1,4 @@
-package com.Art.DTOS.RegisterUserRequest;
+package com.Art.DTOS.Request;
 
 import lombok.Setter;
 

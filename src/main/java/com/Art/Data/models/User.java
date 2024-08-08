@@ -15,4 +15,5 @@ public class User {
     private String password;
     private String email;
     private userRoles role;
+    private boolean loginStatus;
 }

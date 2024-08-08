@@ -1,4 +1,4 @@
-package com.Art.DTOS.RegisterUserResponse;
+package com.Art.DTOS.Response;
 
 import lombok.Getter;
 import lombok.Setter;

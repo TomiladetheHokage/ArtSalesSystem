@@ -1,7 +1,7 @@
 package com.Art.Utils;
 
-import com.Art.DTOS.RegisterUserRequest.RegisterUserRequest;
-import com.Art.DTOS.RegisterUserRequest.UpdateProfileRequest;
+import com.Art.DTOS.Request.RegisterUserRequest;
+import com.Art.DTOS.Request.UpdateProfileRequest;
 import com.Art.Data.models.User;
 
 public class Mapper {
@@ -20,4 +20,6 @@ public class Mapper {
         user.setEmail(updateProfileRequest.getEmail());
         return user;
     }
+
+   // public static User map
 }
