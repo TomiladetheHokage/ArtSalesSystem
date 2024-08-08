@@ -2,6 +2,7 @@ package com.Art.Services;
 
 import com.Art.DTOS.Request.RegisterUserRequest;
 import com.Art.DTOS.Request.UpdateProfileRequest;
+import com.Art.DTOS.Response.DeleteProfileResponse;
 import com.Art.DTOS.Response.LoginUserResponse;
 import com.Art.DTOS.Response.RegisterUserResponse;
 import com.Art.DTOS.Response.UpdateProfileResponse;
@@ -12,6 +13,8 @@ import com.Art.Data.models.User;
 import com.Art.Data.models.userRoles;
 import com.Art.Exceptions.UserExistAlreadyException;
 import com.Art.Exceptions.titleAlreadyExistException;
+import com.Art.Exceptions.titleNotFoundException;
+import com.Art.Exceptions.userNameNotFoundException;
 import com.cloudinary.Cloudinary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -66,12 +69,12 @@ public class UserServiceImpl implements userService{
     }
 
     @Override
-    public ArtWork findArtByTitle(String title) {
+    public ArtWork findArtByTitle(String title) throws titleNotFoundException {
         ArtWork artWork = artworkRepo.findByTitle(title);
         if (artWork != null) {
             return artWork;
         } else {
-            throw new IllegalArgumentException("Artwork with title " + title + " not found");
+            throw new titleNotFoundException("Artwork with title " + title + " not found");
         }
     }
 
@@ -87,10 +90,11 @@ public class UserServiceImpl implements userService{
     }
 
     @Override
-    public UpdateProfileResponse updateProfile(UpdateProfileRequest updateProfileRequest, String username, String password) {
+    public UpdateProfileResponse updateProfile(UpdateProfileRequest updateProfileRequest, String username, String password) throws userNameNotFoundException {
         User existingUser = userRepo.findUserByUserNameAndPassword(username, password);
+        boolean valid = existingUser.getUserName().equals(updateProfileRequest.getUserName()) && existingUser.getPassword().equals(updateProfileRequest.getPassword());
 
-        if (existingUser != null) {
+        if (valid) {
             existingUser.setUserName(updateProfileRequest.getUserName());
             existingUser.setPassword(updateProfileRequest.getPassword());
             existingUser.setEmail(updateProfileRequest.getEmail());
@@ -100,14 +104,21 @@ public class UserServiceImpl implements userService{
             updateProfileResponse.setMessage("Successfully updated");
             return updateProfileResponse;
         }
-        throw new IllegalArgumentException("User with username " + username + " not found");
+        throw new userNameNotFoundException("User with username " + username + " not found");
     }
 
 
     @Override
-    public void deleteProfile(String  userName, String password) {
-        List<User> users =  userRepo.findAll();
-        userRepo.findUserByUserNameAndPassword(userName, password);
+    public DeleteProfileResponse deleteProfile(String  userName, String password) {
+        User existingUser = userRepo.findUserByUserNameAndPassword(userName, password);
+        boolean valid = existingUser.getUserName().equals(userName) && existingUser.getPassword().equals(password);
+        if (valid) {
+            userRepo.delete(existingUser);
+        }
+        DeleteProfileResponse deleteProfileResponse = new DeleteProfileResponse();
+        deleteProfileResponse.setResponse("Succesfully Deleted");
+        existingUser.setLoginStatus(false);
+        return deleteProfileResponse;
     }
 
     @Override
